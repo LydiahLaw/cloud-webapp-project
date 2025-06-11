@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cloud Engineering Demo</title>
+    <style>
+        body { font-family: Arial; margin: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; }
+        .metrics { background: #f8f9ff; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #667eea; }
+        button { background: #667eea; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; margin: 5px; }
+        button:hover { background: #5a67d8; }
+        .status-healthy { color: #22c55e; font-weight: bold; }
+        .metric-value { font-size: 1.2em; color: #1f2937; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Cloud Native Web Application</h1>
+            <p>Demonstrating containerization, cloud deployment, and real-time monitoring</p>
+        </div>
+        
+        <div class="metrics">
+            <h3>📊 System Metrics</h3>
+            <div id="metrics-data">Loading system metrics...</div>
+            <button onclick="loadMetrics()">🔄 Refresh Metrics</button>
+        </div>
+        
+        <div class="metrics">
+            <h3>💚 Health Status</h3>
+            <div id="health-data">Checking application health...</div>
+            <button onclick="loadHealth()">🩺 Check Health</button>
+        </div>
+
+        <div class="metrics">
+            <h3>🛠️ Technology Stack</h3>
+            <p><strong>Backend:</strong> Python Flask</p>
+            <p><strong>Container:</strong> Docker</p>
+            <p><strong>Cloud:</strong> AWS EC2</p>
+            <p><strong>Monitoring:</strong> CloudWatch</p>
+        </div>
+    </div>
+
+    <script>
+        function loadMetrics() {
+            fetch('/metrics')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('metrics-data').innerHTML = `
+                        <p>🖥️ CPU Usage: <span class="metric-value">${data.cpu_percent}%</span></p>
+                        <p>💾 Memory Usage: <span class="metric-value">${data.memory_percent}%</span></p>
+                        <p>💿 Disk Usage: <span class="metric-value">${data.disk_usage}%</span></p>
+                        <p>🕐 Last Updated: ${new Date(data.timestamp).toLocaleString()}</p>
+                    `;
+                })
+                .catch(error => {
+                    document.getElementById('metrics-data').innerHTML = '<p style="color: red;">Error loading metrics</p>';
+                });
+        }
+        
+        function loadHealth() {
+            fetch('/health')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('health-data').innerHTML = `
+                        <p>Status: <span class="status-healthy">${data.status.toUpperCase()}</span></p>
+                        <p>⏱️ Uptime: ${Math.floor(data.uptime)} seconds</p>
+                        <p>🕐 Timestamp: ${new Date(data.timestamp).toLocaleString()}</p>
+                    `;
+                })
+                .catch(error => {
+                    document.getElementById('health-data').innerHTML = '<p style="color: red;">Health check failed</p>';
+                });
+        }
+        
+        // Load data when page loads
+        loadMetrics();
+        loadHealth();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(loadMetrics, 30000);
+    </script>
+</body>
+</html>
